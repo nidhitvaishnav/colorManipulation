@@ -18,30 +18,22 @@ class ColorManipulation:
         bgrImg = myIO.readImage(name_input)
         
         # debug
-        myIO.showImage(bgrImg, "BGR Image")
+        print("bgrImg =\n {}".format(bgrImg))
         # debug -ends
 
+        
+#         # debug
+#         myIO.showImage(bgrImg, "BGR Image")
+#         # debug -ends
+
         colorProcess=ColorProcess()
-        sRGBImg = colorProcess.bgrTosRGB(bgrImage=bgrImg)
-        
+        LuvImg = colorProcess.bgrToLuv(bgrImg = bgrImg)
         # debug
-        myIO.showImage(sRGBImg, "RGB Image")
+        print("\nLuvImg = \n{}".format(LuvImg))
         # debug -ends
-        
-        nonLinearRGBImg = colorProcess.sRGBToNonLinearRGB(sRGBImage=sRGBImg)
-        
-        # debug
-        myIO.showImage(nonLinearRGBImg, "non linear RGB Image")
-        # debug -ends
-        
-        linearRGBImg = colorProcess.nonLinearRGBToLinearRGB(nonLinearRGBImg = nonLinearRGBImg)
-        
-        # debug
-        myIO.showImage(linearRGBImg, "linearRGBImg")
-        cv2.waitKey(0)
-        # debug -ends
-        
-        xyzImg = colorProcess.linearRGBToXYZ(linearRGBImage = linearRGBImg)
+
+
+
         
 
         
