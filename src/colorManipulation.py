@@ -61,6 +61,7 @@ class ColorManipulation:
         print("HELuvImg = \n{}".format(HELuvImg))
         # debug -ends
         
+        colorProcess.LuvToBGR(LuvImage=scaledLuvImg)
 
 
 # |--------------------------------linearStretchingInLUV---------------------------------|

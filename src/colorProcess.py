@@ -264,7 +264,6 @@ class ColorProcess:
                 tlTable[i,j] = [t,l]
                 du1v1table[i,j] = [d, u1, v1]
                 # debug -ends
-
                 LuvImg[i,j]= self.findLuv(l, u1, v1, uw, vw)
             #for j -ends
         #for i -ends
@@ -318,4 +317,116 @@ class ColorProcess:
         return [l,u,v]
         
 # |--------------------------------findLuv---------------------------------|
+# |----------------------------------------------------------------------------|
+# LuvToBGR
+# |----------------------------------------------------------------------------|
+    def LuvToBGR(self, LuvImage):
+        '''
+        1. Convert LuvImage into XYZ Image
+        '''
+        XYZImage = self.LuvToXYZ(LuvImage)
+        # debug
+        print("XYZImage = {}".format(XYZImage))
+        # debug -ends
+
+        
+# |--------------------------------LuvToBGR---------------------------------|
+    
+# |----------------------------------------------------------------------------|
+# LuvToXYZ
+# |----------------------------------------------------------------------------|
+    def LuvToXYZ(self, LuvImage):
+        '''
+        To convert XYZ into Luv, we have
+        Xw, Yw, Zw = 0.95, 1.0, 1.09
+        
+        uw = (4*Xw)/(Xw+15*Yw+3*Zw)
+        vw = (9*Yw)/(Xw+15*Yw+3*Zw)
+        
+        1. find u1, v1 using l,u,v,uw,vw
+        2. using L and Yw, find Y
+        3. using u1, v1 and Y, find XYZ
+        '''
+        Xw, Yw, Zw = 0.95, 1.0, 1.09
+        uw = (4*Xw)/(Xw+15*Yw+3*Zw)
+        vw = (9*Yw)/(Xw+15*Yw+3*Zw)
+        
+        # debug
+        print("uw = {}, vw = {}".format(uw, vw))
+        # debug -ends
+
+        rows, cols, bands = LuvImage.shape # bands == 3
+        XYZImg = np.zeros([rows, cols, bands], dtype=float)
+        u1v1Table = np.zeros([rows, cols, 2], dtype=float)
+        
+        for i in range(0,rows):
+            for j in range(0, cols):
+                l,u,v = LuvImage[i,j]
+                u1, v1 = self.findu1v1LuvToXYZ(l,u,v, uw, vw)
+                
+                # debug
+                u1v1Table[i,j] = [u1,v1]
+                print("u1v1Table =\n {}".format(u1v1Table))
+                # debug -ends
+                
+                Y = self.findY(l, Yw)
+                XYZImg[i,j]= self.findXYZ(u1, v1, Y)
+            #for j -ends
+        #for i -ends
+        return XYZImg
+        
+# |--------------------------------LuvToXYZ---------------------------------|
+# |----------------------------------------------------------------------------|
+# findu1v1LuvToXYZ
+# |----------------------------------------------------------------------------|
+    def findu1v1LuvToXYZ(self, L, u, v, uw, vw):
+        '''
+        u1 = (u+13*uw*L)/13*L
+        v1 = (v+13*vw*L)/13*L
+        '''
+        if L==0:
+            u1=0
+            v1=0
+        else:
+            u1 = (u+13*uw*L)/(13*L)
+            v1 = (v+13*vw*L)/(13*L)
+        #if L -ends
+        return u1, v1
+        
+# |--------------------------------findu1v1LuvToXYZ---------------------------------|
+# |----------------------------------------------------------------------------|
+# findY
+# |----------------------------------------------------------------------------|
+    def findY(self, L, Yw):
+        '''
+        Y = Yw*((L+16)/116)^3;         if L>7.9996
+          = L*Yw/903.3;                otherwise
+        '''
+        if L>7.9996:
+            Y = np.power(((L+16)/116), 3)*Yw
+        else:
+            Y = L*Yw/903.3
+        #if L -ends
+        return Y
+        
+# |--------------------------------findY---------------------------------|
+# |----------------------------------------------------------------------------|
+# findXYZ
+# |----------------------------------------------------------------------------|
+    def findXYZ(self, u1, v1, Y):
+        '''
+        X = Y*2.25u1/v1
+        Z = Y*(3-0.75u1-5v1)/v1
+        '''
+        if v1 == 0:
+            X=0
+            Z=0
+        else:
+            X = Y*2.25*u1/v1
+            Z = Y*(3-0.75*u1-5*v1)/v1
+        #if v1 -ends
+        return [X, Y, Z]
+# |--------------------------------findXYZ---------------------------------|
+
+    
     
