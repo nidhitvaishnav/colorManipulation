@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-class colorProcess:
+class ColorProcess:
 
 # |----------------------------------------------------------------------------|
 # bgrToGray
@@ -43,25 +43,94 @@ class colorProcess:
 # |----------------------------------------------------------------------------|
 # bgrToRGB
 # |----------------------------------------------------------------------------|
-    def bgrToRGB(self, bgrImage):
+    def bgrTosRGB(self, bgrImage):
         '''
         given function converts BGRImage into RGBImage
         '''
         
         rows, cols, bands = bgrImage.shape # bands == 3
         
-        rgbImage =  np.zeros([rows, cols, bands], dtype=np.uint8)
+        sRGBImage =  np.zeros([rows, cols, bands], dtype=np.uint8)
 
         for i in range(0, rows):
             for j in range(0, cols):
                 b,g,r = bgrImage[i,j]
-                rgbImage[i,j] = [r,g,b]
+                sRGBImage[i,j] = [r,g,b]
             #for j -ends
         #for i -ends
         
-        return rgbImage
+        return sRGBImage
     
 # |--------------------------------bgrToRGB------------------------------------|
 
+# |----------------------------------------------------------------------------|
+# sRGBToLinearRGB
+# |----------------------------------------------------------------------------|
+    def sRGBToNonLinearRGB(self, sRGBImage):
+        '''
+        Given function converts sRGB Image into non Linear RGB image by
+        R'=R/255; G'=G/255; B'=B/255
+        '''
+        rows, cols, bands = sRGBImage.shape # bands == 3
+        
+        nonlinearRGBImg =  np.zeros([rows, cols, bands], dtype=np.uint8)
+
+        for i in range(0, rows):
+            for j in range(0, cols):
+                r,g,b = sRGBImage[i,j]
+                nonlinearRGBImg[i,j] = [float(r/255),float(g/255),float(b/255)]
+            #for j -ends
+        #for i -ends
+        
+        return nonlinearRGBImg
+        
+# |--------------------------------sRGBToLinearRGB---------------------------------|
+    
+# |----------------------------------------------------------------------------|
+# nonLinearRGBToLinearRGB
+# |----------------------------------------------------------------------------|
+    def nonLinearRGBToLinearRGB(self, nonLinearRGBImg):
+        '''
+        converting nonLinear RGB into Linear RGB by applying inverse Gamma
+        correction in following way:
+        RGB = invgamma(R',G',B')
+       
+        '''
+        rows, cols, bands = nonLinearRGBImg.shape # bands == 3
+        
+        linearRGBImg =  np.zeros([rows, cols, bands], dtype=np.uint8)
+
+        for i in range(0, rows):
+            for j in range(0, cols):
+                r,g,b = nonLinearRGBImg[i,j]
+                linearRGBImg[i,j] = self.invGamma([r,g,b])
+            #for j -ends
+        #for i -ends
+        
+        return linearRGBImg 
+        
+# |--------------------------------nonLinearRGBToLinearRGB---------------------|
+
+# |----------------------------------------------------------------------------|
+# invGamma
+# |----------------------------------------------------------------------------|
+    def invGamma(self, rgbList):
+        '''
+        invgamma (D) = v/12.92;   if v<0.03928
+                     = ((v+0.055)/1.055)^2.4;  otherwise
+        '''
+        invRGBList = []
+        for v in rgbList:
+            if v<0.03928:
+                d=float(v)/12.92
+            else:
+                d=np.power(float(v+0.055)/1.055, 2.4)
+            #if v -ends
+            invRGBList.append(d)
+        #for v -ends
+        return invRGBList
+                
+# |--------------------------------invGamma------------------------------------|
+    
 
     

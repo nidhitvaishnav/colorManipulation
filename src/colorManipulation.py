@@ -1,9 +1,50 @@
 import cv2
 import numpy as np
 import sys
+from myIO import MyIO
+from colorProcess import ColorProcess
 
 
+class ColorManipulation:
+    
+# |----------------------------------------------------------------------------|
+# linearStretchingInLUV
+# |----------------------------------------------------------------------------|
+    def linearStretchingInLUV(self, w1, h1, w2, h2, name_input, name_output):
+        '''
+        
+        '''
+        myIO = MyIO()
+        bgrImg = myIO.readImage(name_input)
+        
+        # debug
+        myIO.showImage(bgrImg, "BGR Image")
+        # debug -ends
 
+        colorProcess=ColorProcess()
+        sRGBImg = colorProcess.bgrTosRGB(bgrImage=bgrImg)
+        
+        # debug
+        myIO.showImage(sRGBImg, "RGB Image")
+        # debug -ends
+        
+        nonLinearRGBImg = colorProcess.sRGBToNonLinearRGB(sRGBImage=sRGBImg)
+        
+        # debug
+        myIO.showImage(nonLinearRGBImg, "non linear RGB Image")
+        # debug -ends
+        
+        linearRGBImg = colorProcess.nonLinearRGBToLinearRGB(nonLinearRGBImg = nonLinearRGBImg)
+        
+        # debug
+        myIO.showImage(linearRGBImg, "linearRGBImg")
+        cv2.waitKey(0)
+        # debug -ends
+        
+
+        
+# |--------------------------------linearStretchingInLUV---------------------------------|
+    
 
 
 
@@ -28,7 +69,9 @@ if __name__ == '__main__':
         print(" arguments must satisfy 0 <= w1 < w2 <= 1, 0 <= h1 < h2 <= 1")
         sys.exit()
 
-        
-    # wait for key to exit
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # debug
+    print("w1 = {}, h1={}, w2={}, h2={}".format(w1, w2, h1, h2))
+    # debug -ends
+
+    colorManipulation = ColorManipulation()
+    colorManipulation.linearStretchingInLUV(w1, h1, w2, h2, name_input, name_output)

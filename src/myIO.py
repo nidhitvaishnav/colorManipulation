@@ -1,7 +1,7 @@
 import sys
 import cv2
 
-class io:
+class MyIO:
 
 # |----------------------------------------------------------------------------|
 # readImage
@@ -20,11 +20,11 @@ class io:
 # |----------------------------------------------------------------------------|
 # showImage
 # |----------------------------------------------------------------------------|
-    def showImage(self, name_input, inputImage):
+    def showImage(self, inputImage, imageText):
         '''
         given function displays the image
         '''
-        cv2.imshow("image: " + name_input, inputImage)
+        cv2.imshow("image: "+imageText, inputImage)
 # |--------------------------------showImage-----------------------------------|
 # |----------------------------------------------------------------------------|
 # writeImage
