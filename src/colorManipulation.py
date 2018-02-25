@@ -3,6 +3,7 @@ import numpy as np
 import sys
 from myIO import MyIO
 from colorProcess import ColorProcess
+from imageProcess import ImageProcess
 
 
 class ColorManipulation:
@@ -10,8 +11,16 @@ class ColorManipulation:
 # |----------------------------------------------------------------------------|
 # linearStretchingInLUV
 # |----------------------------------------------------------------------------|
-    def linearStretchingInLUV(self, w1, h1, w2, h2, name_input, name_output):
+    def myUI(self, w1, h1, w2, h2, name_input, name_output):
         '''
+        given function performs the following tasks:
+        1. read the image in BGR format
+        2. convert w1, h1, w2, h2 window size in respective pixel format
+        3. convert BGR image into Luv image
+        4. find linear scaling of entire image on Luv domain,
+           where L is in range of given window
+        5. find histogram of entire image on Luv domain,
+           where L is in range of given window
         
         '''
         myIO = MyIO()
@@ -20,11 +29,14 @@ class ColorManipulation:
         # debug
         print("bgrImg =\n {}".format(bgrImg))
         # debug -ends
-
-        
+                
 #         # debug
 #         myIO.showImage(bgrImg, "BGR Image")
 #         # debug -ends
+
+        W1, H1, W2, H2 = myIO.windowsSizeMapping(inputImage = bgrImg,\
+                                                 w1 = w1, h1=h1,\
+                                                 w2 = w2, h2=h2)
 
         colorProcess=ColorProcess()
         LuvImg = colorProcess.bgrToLuv(bgrImg = bgrImg)
@@ -32,11 +44,23 @@ class ColorManipulation:
         print("\nLuvImg = \n{}".format(LuvImg))
         # debug -ends
 
-
-
+        imageProcess = ImageProcess()
+        scaledLuvImg = imageProcess.linearScaling(LuvImg, W1, H1, W2, H2)
+        
+        # debug
+        print("scaledLuvImg =\n {}".format(scaledLuvImg))
+        # debug -ends
+        
+        
+        
+        
+        
+        
+        
+        
         
 
-        
+
 # |--------------------------------linearStretchingInLUV---------------------------------|
     
 
@@ -68,4 +92,4 @@ if __name__ == '__main__':
     # debug -ends
 
     colorManipulation = ColorManipulation()
-    colorManipulation.linearStretchingInLUV(w1, h1, w2, h2, name_input, name_output)
+    colorManipulation.myUI(w1, h1, w2, h2, name_input, name_output)
