@@ -37,6 +37,10 @@ class ColorManipulation:
         W1, H1, W2, H2 = myIO.windowsSizeMapping(inputImage = bgrImg,\
                                                  w1 = w1, h1=h1,\
                                                  w2 = w2, h2=h2)
+        # debug
+        print("W1 = {}, H1={}, W2={}, H2={}".format(W1, H1, W2, H2))
+        # debug -ends
+
 
         colorProcess=ColorProcess()
         LuvImg = colorProcess.bgrToLuv(bgrImg = bgrImg)
@@ -51,13 +55,11 @@ class ColorManipulation:
         print("scaledLuvImg =\n {}".format(scaledLuvImg))
         # debug -ends
         
+        HELuvImg = imageProcess.histogramEqualizationInLuv(LuvImg, W1, H1, W2, H2)
         
-        
-        
-        
-        
-        
-        
+        # debug
+        print("HELuvImg = \n{}".format(HELuvImg))
+        # debug -ends
         
 
 

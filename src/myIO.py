@@ -45,10 +45,10 @@ class MyIO:
         
         '''
         rows, cols, bands = inputImage.shape # bands == 3
-        W1 = round(w1*(cols-1))
-        H1 = round(h1*(rows-1))
-        W2 = round(w2*(cols-1))
-        H2 = round(h2*(rows-1))
+        W1 = round(w1*(cols))
+        H1 = round(h1*(rows))
+        W2 = round(w2*(cols))
+        H2 = round(h2*(rows))
 
         return W1, H1, W2, H2
 # |--------------------------------windowsSizeConversion---------------------------------|
