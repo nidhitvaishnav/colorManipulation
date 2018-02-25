@@ -132,5 +132,29 @@ class ColorProcess:
                 
 # |--------------------------------invGamma------------------------------------|
     
+# |----------------------------------------------------------------------------|
+# linearRGBToXYZ
+# |----------------------------------------------------------------------------|
+    def linearRGBToXYZ(self, linearRGBImage):
+        '''
+        
+        '''
+        rows, cols, bands = linearRGBImage.shape # bands == 3
+        
+        xyzImage =  np.zeros([rows, cols, bands], dtype=np.uint8)
+        multiplierMatrix = np.array([[0.412453, 0.35758, 0.180423],
+                                     [0.212671, 0.71516, 0.072169],
+                                     [0.019334, 0.119193, 0.950227]])
 
+        for i in range(0, rows):
+            for j in range(0, cols):
+                r,g,b = linearRGBImage[i,j]
+                xyzImage[i,j] = np.matmul(multiplierMatrix, np.array([r,g,b]))
+            #for j -ends
+        #for i -ends
+        
+        return xyzImage 
+        
+# |--------------------------------linearRGBToXYZ---------------------------------|
+    
     

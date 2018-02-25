@@ -41,6 +41,8 @@ class ColorManipulation:
         cv2.waitKey(0)
         # debug -ends
         
+        xyzImg = colorProcess.linearRGBToXYZ(linearRGBImage = linearRGBImg)
+        
 
         
 # |--------------------------------linearStretchingInLUV---------------------------------|
