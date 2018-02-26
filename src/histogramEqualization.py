@@ -17,12 +17,12 @@ class ColorManipulation:
         1. read the image in BGR format
         2. convert w1, h1, w2, h2 window size in respective pixel format
         3. convert BGR image into Luv image
-        4. find linear scaling of entire image on Luv domain,
+        4. find histogram of entire image on Luv domain,
            where L is in range of given window
-        5. find histogram of entire image on Luv domain,
-           where L is in range of given window
-        
+        5. convert Luv image into BGR image
+        6. write output image
         '''
+        # 1. read the image in BGR format
         myIO = MyIO()
         bgrImg = myIO.readImage(name_input)
         
@@ -30,10 +30,11 @@ class ColorManipulation:
         print("bgrImg =\n {}".format(bgrImg))
         # debug -ends
                 
-#         # debug
-#         myIO.showImage(bgrImg, "BGR Image")
-#         # debug -ends
+        # debug
+        myIO.showImage(bgrImg, "BGR Image")
+        # debug -ends
 
+        # 2. convert w1, h1, w2, h2 window size in respective pixel format
         W1, H1, W2, H2 = myIO.windowsSizeMapping(inputImage = bgrImg,\
                                                  w1 = w1, h1=h1,\
                                                  w2 = w2, h2=h2)
@@ -42,6 +43,7 @@ class ColorManipulation:
         # debug -ends
 
 
+        # 3. convert BGR image into Luv image
         colorProcess=ColorProcess()
         LuvImg = colorProcess.bgrToLuv(bgrImg = bgrImg)
         # debug
@@ -49,14 +51,9 @@ class ColorManipulation:
         print("\nLuvImg = \n{}".format(LuvImg))
         # debug -ends
 
+        #4. find histogram of entire image on Luv domain,
+        #   where L is in range of given window
         imageProcess = ImageProcess()
-        scaledLuvImg = imageProcess.linearScaling(LuvImg, W1, H1, W2, H2)
-        
-        # debug
-        print("-----------------------------------------------------")
-        print("scaledLuvImg =\n {}".format(scaledLuvImg))
-        # debug -ends
-        
         HELuvImg = imageProcess.histogramEqualizationInLuv(LuvImg, W1, H1, W2, H2)
         
         # debug
@@ -64,21 +61,21 @@ class ColorManipulation:
         print("HELuvImg = \n{}".format(HELuvImg))
         # debug -ends
         
-        scaledBGRImage = colorProcess.LuvToBGR(LuvImage=scaledLuvImg)
+        # 5. convert Luv image into BGR image
         HEBGRImage = colorProcess.LuvToBGR(LuvImage = HELuvImg)
         
-#         # debug
-#         myIO.showImage(scaledBGRImage, "scaled BGR Image")
-#         myIO.showImage(HEBGRImage, "Histogram Equalized BGR Image")
-#         # debug -ends
+        # debug
+        myIO.showImage(HEBGRImage, "Histogram Equalized BGR Image")
+        cv2.waitKey(0)
+        # debug -ends
 
         # debug
         print("-----------------------------------------------------")
-        print("scaledBGRImage =\n {}".format(scaledBGRImage))
-        print("HENGRImage =\n {}".format(HEBGRImage))
+        print("HEBGRImage =\n {}".format(HEBGRImage))
         # debug -ends
 
-
+        #6. write output image
+        myIO.writeImage(outputImage = HEBGRImage, name_output = name_output)
 
 # |--------------------------------linearStretchingInLUV---------------------------------|
     

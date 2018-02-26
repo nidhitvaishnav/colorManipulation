@@ -54,26 +54,26 @@ class ColorProcess:
         '''
         sRGBImg = self.bgrTosRGB(bgrImage=bgrImg)
         
-        # debug
-        print("----------------------------------------------------")
-        print("sRGBImg = \n{}".format(sRGBImg))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("sRGBImg = \n{}".format(sRGBImg))
+#         # debug -ends
   
         nonLinearRGBImg = self.sRGBToNonLinearRGB(sRGBImage=sRGBImg)
         
-        # debug
-        print("----------------------------------------------------")
-        print("nonLinearRGBImg =\n {}".format(nonLinearRGBImg))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("nonLinearRGBImg =\n {}".format(nonLinearRGBImg))
+#         # debug -ends
 
                 
         linearRGBImg = self.nonLinearRGBToLinearRGB(nonLinearRGBImg = \
                                                             nonLinearRGBImg)
         
-        # debug
-        print("----------------------------------------------------")
-        print("linearRGBImg =\n {}".format(linearRGBImg))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("linearRGBImg =\n {}".format(linearRGBImg))
+#         # debug -ends
 
         
 #         # debug
@@ -83,20 +83,20 @@ class ColorProcess:
         
         XYZImg = self.linearRGBToXYZ(linearRGBImage = linearRGBImg)
         
-        # debug
-        print("----------------------------------------------------")
-        print("xyzImg =\n {}".format(XYZImg))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("xyzImg =\n {}".format(XYZImg))
+#         # debug -ends
         
         LuvImg, tlTable, du1v1table = self.XYZToLuv(XYZImg = XYZImg)
         
-        # debug
-        print("----------------------------------------------------")
-        print("tlTable = \n {}".format(tlTable))
-        print("du1v1 table = \n {}".format(du1v1table))
-        print("\n----------------------------------------------------")
-        print("LuvImg =\n {}".format(LuvImg))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("tlTable = \n {}".format(tlTable))
+#         print("du1v1 table = \n {}".format(du1v1table))
+#         print("\n----------------------------------------------------")
+#         print("LuvImg =\n {}".format(LuvImg))
+#         # debug -ends
         return LuvImg
 # |--------------------------------bgrToLuv---------------------------------|
     
@@ -241,9 +241,9 @@ class ColorProcess:
         uw = (4*Xw)/(Xw+15*Yw+3*Zw)
         vw = (9*Yw)/(Xw+15*Yw+3*Zw)
         
-        # debug
-        print("uw = {}, vw = {}".format(uw, vw))
-        # debug -ends
+#         # debug
+#         print("uw = {}, vw = {}".format(uw, vw))
+#         # debug -ends
 
         rows, cols, bands = XYZImg.shape # bands == 3
 
@@ -326,34 +326,34 @@ class ColorProcess:
         5. convert RGB image to BGR image
         '''
         XYZImage = self.LuvToXYZ(LuvImage)
-        # debug
-        print("----------------------------------------------------")
-        print("XYZImage = {}".format(XYZImage))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("XYZImage = {}".format(XYZImage))
+#         # debug -ends
         
         linearsRGBImage = self.XYZToLinearRGB(XYZImage)
-        # debug
-        print("----------------------------------------------------")
-        print("linearsRGBImage =\n {}".format(linearsRGBImage))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("linearsRGBImage =\n {}".format(linearsRGBImage))
+#         # debug -ends
 
         nonLinearsRGBImage = self.linearsRGBToNonLinearRGB(linearRGBImage = linearsRGBImage)
-        # debug
-        print("----------------------------------------------------")
-        print("nonLinearsRGBImage =\n {}".format(nonLinearsRGBImage))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("nonLinearsRGBImage =\n {}".format(nonLinearsRGBImage))
+#         # debug -ends
         
         rgbImage = self.sRGBImageToRGBImage(sRGBImage=nonLinearsRGBImage)
-        # debug
-        print("----------------------------------------------------")
-        print("rgbImage =\n {}".format(rgbImage))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("rgbImage =\n {}".format(rgbImage))
+#         # debug -ends
 
         bgrImage = self.RGBToBGR(rgbImage)
-        # debug
-        print("----------------------------------------------------")
-        print("bgrImage =\n {}".format(bgrImage))
-        # debug -ends
+#         # debug
+#         print("----------------------------------------------------")
+#         print("bgrImage =\n {}".format(bgrImage))
+#         # debug -ends
         
         return bgrImage
         
@@ -378,9 +378,9 @@ class ColorProcess:
         uw = (4*Xw)/(Xw+15*Yw+3*Zw)
         vw = (9*Yw)/(Xw+15*Yw+3*Zw)
         
-        # debug
-        print("uw = {}, vw = {}".format(uw, vw))
-        # debug -ends
+#         # debug
+#         print("uw = {}, vw = {}".format(uw, vw))
+#         # debug -ends
 
         rows, cols, bands = LuvImage.shape # bands == 3
         XYZImg = np.zeros([rows, cols, bands], dtype=float)
@@ -399,9 +399,9 @@ class ColorProcess:
                 XYZImg[i,j]= self.findXYZ(u1, v1, Y)
             #for j -ends
         #for i -ends
-        # debug
-        print("u1v1Table = {}".format(u1v1Table))
-        # debug -ends
+#         # debug
+#         print("u1v1Table = {}".format(u1v1Table))
+#         # debug -ends
 
         return XYZImg
         
