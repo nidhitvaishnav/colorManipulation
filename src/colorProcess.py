@@ -9,35 +9,35 @@ class ColorProcess:
 # |----------------------------------------------------------------------------|
     def bgrToGray(self, inputImage, name_output, H1, H2, W1, W2):
         '''
-        
+         
         '''
         # The transformation should be based on the
         # historgram of the pixels in the W1,W2,H1,H2 range.
         # The following code goes over these pixels
         rows, cols, bands = inputImage.shape # bands == 3
-        
+         
         tmp = np.copy(inputImage)
-        
+         
         for i in range(H1, H2) :
             for j in range(W1, W2) :
                 b, g, r = inputImage[i, j]
                 gray = round(0.3*r + 0.6*g + 0.1*b + 0.5)
                 tmp[i, j] = [gray, gray, gray]
-        
+         
         cv2.imshow('tmp', tmp)
-        
+         
         # end of example of going over window
-        
+         
         outputImage = np.zeros([rows, cols, bands], dtype=np.uint8)
-        
+         
         for i in range(0, rows) :
             for j in range(0, cols) :
                 b, g, r = inputImage[i, j]
                 outputImage[i,j] = [b, g, r]
-        
-
+         
+ 
         return outputImage
-        
+         
 # |--------------------------------bgrToGray---------------------------------|
 
 # |----------------------------------------------------------------------------|
@@ -46,39 +46,32 @@ class ColorProcess:
     def bgrToLuv(self, bgrImg):
         '''
         converting BGR image into Luv format
-        1. convert BGR to RGB
-        2. convert RGB to sRGB
-        3. convert sRGB to non linear RGB
-        4. convert non linear RGB to linear RGB
-        5. convert linear RGB to XYZ
-        6. convert XYZ to Luv
+        1. convert BGR to sRGB
+        2. convert sRGB to non linear RGB
+        3. convert non linear RGB to linear RGB
+        4. convert linear RGB to XYZ
+        5. convert XYZ to Luv
         '''
         sRGBImg = self.bgrTosRGB(bgrImage=bgrImg)
         
         # debug
+        print("----------------------------------------------------")
         print("sRGBImg = \n{}".format(sRGBImg))
         # debug -ends
-
-        
-#         # debug
-#         myIO.showImage(sRGBImg, "RGB Image")
-#         # debug -ends
-        
+  
         nonLinearRGBImg = self.sRGBToNonLinearRGB(sRGBImage=sRGBImg)
         
         # debug
+        print("----------------------------------------------------")
         print("nonLinearRGBImg =\n {}".format(nonLinearRGBImg))
         # debug -ends
 
-        
-#         # debug
-#         myIO.showImage(nonLinearRGBImg, "non linear RGB Image")
-#         # debug -ends
-        
+                
         linearRGBImg = self.nonLinearRGBToLinearRGB(nonLinearRGBImg = \
                                                             nonLinearRGBImg)
         
         # debug
+        print("----------------------------------------------------")
         print("linearRGBImg =\n {}".format(linearRGBImg))
         # debug -ends
 
@@ -91,14 +84,17 @@ class ColorProcess:
         XYZImg = self.linearRGBToXYZ(linearRGBImage = linearRGBImg)
         
         # debug
+        print("----------------------------------------------------")
         print("xyzImg =\n {}".format(XYZImg))
         # debug -ends
         
         LuvImg, tlTable, du1v1table = self.XYZToLuv(XYZImg = XYZImg)
         
         # debug
+        print("----------------------------------------------------")
         print("tlTable = \n {}".format(tlTable))
         print("du1v1 table = \n {}".format(du1v1table))
+        print("\n----------------------------------------------------")
         print("LuvImg =\n {}".format(LuvImg))
         # debug -ends
         return LuvImg
@@ -322,13 +318,44 @@ class ColorProcess:
 # |----------------------------------------------------------------------------|
     def LuvToBGR(self, LuvImage):
         '''
+        Converting Luv format to BGR format
         1. Convert LuvImage into XYZ Image
+        2. Convert XYZImage into linearsRGBImage
+        3. Convert linearsRGBImage into nonLinearsRGB image
+        4. convert sRGB image into RGB image
+        5. convert RGB image to BGR image
         '''
         XYZImage = self.LuvToXYZ(LuvImage)
         # debug
+        print("----------------------------------------------------")
         print("XYZImage = {}".format(XYZImage))
         # debug -ends
+        
+        linearsRGBImage = self.XYZToLinearRGB(XYZImage)
+        # debug
+        print("----------------------------------------------------")
+        print("linearsRGBImage =\n {}".format(linearsRGBImage))
+        # debug -ends
 
+        nonLinearsRGBImage = self.linearsRGBToNonLinearRGB(linearRGBImage = linearsRGBImage)
+        # debug
+        print("----------------------------------------------------")
+        print("nonLinearsRGBImage =\n {}".format(nonLinearsRGBImage))
+        # debug -ends
+        
+        rgbImage = self.sRGBImageToRGBImage(sRGBImage=nonLinearsRGBImage)
+        # debug
+        print("----------------------------------------------------")
+        print("rgbImage =\n {}".format(rgbImage))
+        # debug -ends
+
+        bgrImage = self.RGBToBGR(rgbImage)
+        # debug
+        print("----------------------------------------------------")
+        print("bgrImage =\n {}".format(bgrImage))
+        # debug -ends
+        
+        return bgrImage
         
 # |--------------------------------LuvToBGR---------------------------------|
     
@@ -366,13 +393,16 @@ class ColorProcess:
                 
                 # debug
                 u1v1Table[i,j] = [u1,v1]
-                print("u1v1Table =\n {}".format(u1v1Table))
                 # debug -ends
                 
                 Y = self.findY(l, Yw)
                 XYZImg[i,j]= self.findXYZ(u1, v1, Y)
             #for j -ends
         #for i -ends
+        # debug
+        print("u1v1Table = {}".format(u1v1Table))
+        # debug -ends
+
         return XYZImg
         
 # |--------------------------------LuvToXYZ---------------------------------|
@@ -409,7 +439,7 @@ class ColorProcess:
         #if L -ends
         return Y
         
-# |--------------------------------findY---------------------------------|
+# |--------------------------------findY---------------------------------------|
 # |----------------------------------------------------------------------------|
 # findXYZ
 # |----------------------------------------------------------------------------|
@@ -426,7 +456,129 @@ class ColorProcess:
             Z = Y*(3-0.75*u1-5*v1)/v1
         #if v1 -ends
         return [X, Y, Z]
-# |--------------------------------findXYZ---------------------------------|
+# |--------------------------------findXYZ-------------------------------------|
 
-    
+# |----------------------------------------------------------------------------|
+# XYZToLinearRGB
+# |----------------------------------------------------------------------------|
+    def XYZToLinearRGB(self, XYZImage):
+        '''
+        to find linearsRGBImage, we multiply XYZImage with static array
+        [[3.240479, -1.53715, -0.498535],
+         [-0.969256, 1.875991, 0.041556],
+         [0.055648, -0.204043, 1.057311]]
+        
+        '''
+        rows, cols, bands = XYZImage.shape # bands == 3
+        
+        linearsRGBImage =  np.zeros([rows, cols, bands], dtype=float)
+        multiplierMatrix = np.array([[3.240479, -1.53715, -0.498535],
+                                     [-0.969256, 1.875991, 0.041556],
+                                     [0.055648, -0.204043, 1.057311]])
+
+        for i in range(0, rows):
+            for j in range(0, cols):
+                X,Y,Z = XYZImage[i,j]
+                rgbList = np.matmul(multiplierMatrix, np.array([X,Y,Z]))
+                for index, val in enumerate(rgbList):
+                    if val<0:
+                        rgbList[index]=0
+                    #if val -ends
+                    if val>1:
+                        rgbList[index]=1
+                    #if val -ends
+                #for index, val -ends
+                linearsRGBImage[i,j]=rgbList
+            #for j -ends
+        #for i -ends
+        
+        return linearsRGBImage 
+        
+# |--------------------------------XYZToLinearRGB------------------------------|
+
+# |----------------------------------------------------------------------------|
+# linearsRGBToNonLinearRGB
+# |----------------------------------------------------------------------------|
+    def linearsRGBToNonLinearRGB(self, linearRGBImage):
+        '''
+        converting Linear RGB into non Linear RGB by applying Gamma
+        correction in following way:
+        RGB = gamma(R',G',B')
+
+        '''
+        rows, cols, bands = linearRGBImage.shape # bands == 3
+        
+        nonLinearRGBImg =  np.zeros([rows, cols, bands], dtype=float)
+
+        for i in range(0, rows):
+            for j in range(0, cols):
+                r,g,b = linearRGBImage[i,j]
+                nonLinearRGBImg[i,j] = self.gammaCorrection([r,g,b])
+            #for j -ends
+        #for i -ends
+        
+        return nonLinearRGBImg
+        
+        
+# |--------------------------------linearsRGBToNonLinearRGB---------------------------------|
+# |----------------------------------------------------------------------------|
+# gammaCorrection
+# |----------------------------------------------------------------------------|
+    def gammaCorrection(self, invRGBList):
+        '''
+        I = 12.92D;                if D<0.00304
+          = 1.055D^(1/2.4)-0.055;    otherwise
+        '''
+        rgbList = []
+        for d in invRGBList:
+            if d<0.00304:
+                i=12.92*d
+            else:
+                i=np.power(d, 1/2.4)*1.055 - 0.055
+            #if v -ends
+            rgbList.append(i)
+        #for v -ends
+        return rgbList
+# |--------------------------------gammaCorrection---------------------------------|
+        
+# |----------------------------------------------------------------------------|
+# sRGBImageToRGBImage
+# |----------------------------------------------------------------------------|
+    def sRGBImageToRGBImage(self, sRGBImage):
+        '''
+        R = R'*255;  G = G'*255; B = B'*255;
+        '''
+        rows, cols, bands = sRGBImage.shape # bands == 3
+        
+        RGBImage =  np.zeros([rows, cols, bands], dtype=np.uint8)
+
+        for i in range(0, rows):
+            for j in range(0, cols):
+                r,g,b = sRGBImage[i,j]
+                RGBImage[i,j] = [np.round(r*255), np.round(g*255), np.round(b*255)  ]
+            #for j -ends
+        #for i -ends
+        
+        return RGBImage
+# |--------------------------------sRGBImageToRGBImage---------------------------------|
+# |----------------------------------------------------------------------------|
+# RGBToBGR
+# |----------------------------------------------------------------------------|
+    def RGBToBGR(self, rgbImage):
+        '''
+        
+        '''
+        rows, cols, bands = rgbImage.shape # bands == 3
+        
+        BGRImage =  np.zeros([rows, cols, bands], dtype=np.uint8)
+
+        for i in range(0, rows):
+            for j in range(0, cols):
+                r,g,b = rgbImage[i,j]
+                BGRImage[i,j] = [b,g,r]
+            #for j -ends
+        #for i -ends
+        
+        return BGRImage        
+# |--------------------------------RGBToBGR---------------------------------|
     

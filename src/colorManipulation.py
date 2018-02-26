@@ -45,6 +45,7 @@ class ColorManipulation:
         colorProcess=ColorProcess()
         LuvImg = colorProcess.bgrToLuv(bgrImg = bgrImg)
         # debug
+        print("-----------------------------------------------------")
         print("\nLuvImg = \n{}".format(LuvImg))
         # debug -ends
 
@@ -52,16 +53,31 @@ class ColorManipulation:
         scaledLuvImg = imageProcess.linearScaling(LuvImg, W1, H1, W2, H2)
         
         # debug
+        print("-----------------------------------------------------")
         print("scaledLuvImg =\n {}".format(scaledLuvImg))
         # debug -ends
         
         HELuvImg = imageProcess.histogramEqualizationInLuv(LuvImg, W1, H1, W2, H2)
         
         # debug
+        print("-----------------------------------------------------")
         print("HELuvImg = \n{}".format(HELuvImg))
         # debug -ends
         
-        colorProcess.LuvToBGR(LuvImage=scaledLuvImg)
+        scaledBGRImage = colorProcess.LuvToBGR(LuvImage=scaledLuvImg)
+        HEBGRImage = colorProcess.LuvToBGR(LuvImage = HELuvImg)
+        
+#         # debug
+#         myIO.showImage(scaledBGRImage, "scaled BGR Image")
+#         myIO.showImage(HEBGRImage, "Histogram Equalized BGR Image")
+#         # debug -ends
+
+        # debug
+        print("-----------------------------------------------------")
+        print("scaledBGRImage =\n {}".format(scaledBGRImage))
+        print("HENGRImage =\n {}".format(HEBGRImage))
+        # debug -ends
+
 
 
 # |--------------------------------linearStretchingInLUV---------------------------------|
